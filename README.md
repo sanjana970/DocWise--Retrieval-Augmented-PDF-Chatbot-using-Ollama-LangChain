@@ -72,5 +72,3 @@ It allows users to upload PDF documents and interact with them conversationally 
 ```bash
 git clone https://github.com/sanjana970/DocWise--Retrieval-Augmented-PDF-Chatbot-using-Ollama-LangChain.git
 cd DocWise--Retrieval-Augmented-PDF-Chatbot-using-Ollama-LangChain
-git clone https://github.com/sanjana970/DocWise--Retrieval-Augmented-PDF-Chatbot-using-Ollama-LangChain.git
-cd DocWise--Retrieval-Augmented-PDF-Chatbot-using-Ollama-LangChain
