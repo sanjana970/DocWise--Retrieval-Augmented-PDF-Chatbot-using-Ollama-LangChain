@@ -1,0 +1,16 @@
+# Python virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Streamlit secrets
+.streamlit/secrets.toml
+
+# ChromaDB / vector store (generated data)
+data/vectors/
+
+# OS files
+.DS_Store
+Thumbs.db

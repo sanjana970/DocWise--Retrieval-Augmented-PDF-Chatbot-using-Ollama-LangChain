@@ -37,8 +37,8 @@ PERSIST_DIRECTORY = os.path.join("data", "vectors")
 
 # Streamlit page configuration
 st.set_page_config(
-    page_title="Ollama PDF RAG Streamlit UI",
-    page_icon="🎈",
+    page_title="DocWise",
+    page_icon="📜",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
@@ -221,13 +221,58 @@ def delete_vector_db(vector_db: Optional[Chroma]) -> None:
     else:
         st.error("No vector database found to delete.")
         logger.warning("Attempted to delete vector DB, but none was found")
+def pastel_chat_bubble(text, role):
+    if role == "user":
+        bg = "linear-gradient(135deg, #fde68a, #fbcfe8)"
+        align = "flex-end"
+        icon = "👤"
+    else:
+        bg = "linear-gradient(135deg, #c7d2fe, #e9d5ff)"
+        align = "flex-start"
+        icon = "🤖"
+
+    st.markdown(
+        f"""
+        <div style="display:flex; justify-content:{align}; margin:10px 0;">
+            <div style="
+                background:{bg};
+                padding:14px 18px;
+                border-radius:18px;
+                max-width:75%;
+                color:#1F2937;
+                box-shadow:0 6px 15px rgba(0,0,0,0.12);
+                font-size:0.95rem;
+            ">
+                <strong>{icon}</strong> {text}
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 
 def main() -> None:
     """
     Main function to run the Streamlit application.
     """
-    st.subheader("🧠 Ollama PDF RAG playground", divider="gray", anchor=False)
+    #st.subheader("🧠 Ollama PDF RAG playground", divider="gray", anchor=False)
+    st.markdown(
+    """
+    <div style="
+        padding:1.2rem;
+        border-radius:18px;
+        background: linear-gradient(90deg, #d7e7ff, #e9d5ff, #c7d2fe);
+        margin-bottom:1rem;
+        box-shadow:0 8px 20px rgba(0,0,0,0.08);
+    ">
+        <h1 style="margin:0; color:#1F2937;">📜 DocWise</h1>
+        <p style="margin:0.2rem 0 0; color:#374151;">
+            Retrieval-Augmented PDF Chatbot using Ollama & LangChain
+        </p>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
     # Get available models
     models_info = ollama.list()
@@ -319,10 +364,32 @@ def main() -> None:
         )
 
         # Display PDF pages
+       
+
+       ## with col1:
         with col1:
-            with st.container(height=410, border=True):
-                for page_image in st.session_state["pdf_pages"]:
-                    st.image(page_image, width=zoom_level)
+            st.markdown(
+                """
+                <div style="
+                   background: linear-gradient(180deg, #eef2ff, #dbeafe);
+                   padding:12px;
+                   border-radius:16px;
+                   box-shadow:0 8px 20px rgba(0,0,0,0.08);
+                ">
+                """,
+                unsafe_allow_html=True
+            )
+
+            with st.container(height=410):
+             for page_image in st.session_state["pdf_pages"]:
+                 st.image(page_image, width=zoom_level)
+
+            st.markdown("</div>", unsafe_allow_html=True)
+
+            
+           # with st.container(height=410, border=True):
+               # for page_image in st.session_state["pdf_pages"]:
+                 #   st.image(page_image, width=zoom_level)
 
     # Delete collection button
     delete_collection = col1.button(
@@ -339,17 +406,21 @@ def main() -> None:
         message_container = st.container(height=500, border=True)
 
         # Display chat history
-        for i, message in enumerate(st.session_state["messages"]):
-            avatar = "🤖" if message["role"] == "assistant" else "😎"
-            with message_container.chat_message(message["role"], avatar=avatar):
-                st.markdown(message["content"])
+       # for i, message in enumerate(st.session_state["messages"]):
+        #    avatar = "🤖" if message["role"] == "assistant" else "👤"
+         #   with message_container.chat_message(message["role"], avatar=avatar):
+          #      st.markdown(message["content"])
+        for message in st.session_state["messages"]:
+            pastel_chat_bubble(message["content"], message["role"])
+
 
         # Chat input and processing
-        if prompt := st.chat_input("Enter a prompt here...", key="chat_input"):
+        #if prompt := st.chat_input("Enter a prompt here...", key="chat_input"):
+        if prompt := st.chat_input("Ask anything about the PDF…", key="chat_input"):
             try:
                 # Add user message to chat
                 st.session_state["messages"].append({"role": "user", "content": prompt})
-                with message_container.chat_message("user", avatar="😎"):
+                with message_container.chat_message("user", avatar="👤"):
                     st.markdown(prompt)
 
                 # Process and display assistant response
